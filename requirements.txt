@@ -1,0 +1,7 @@
+langchain
+openai
+boto3
+google-cloud-aiplatform
+faiss-cpu
+pydantic
+python-dotenv

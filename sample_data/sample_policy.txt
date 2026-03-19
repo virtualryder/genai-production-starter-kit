@@ -1,0 +1,24 @@
+ACME Corp — Employee Policies (Sample Document)
+
+Remote Work Policy
+------------------
+Employees may work remotely up to 3 days per week with prior manager approval.
+All remote work requests must be submitted through the HR portal at least 48 hours in advance.
+Employees are expected to be available during core hours: 10 AM – 3 PM local time.
+
+Work Hours
+----------
+Standard work week is 40 hours.
+Overtime must be pre-approved by a manager.
+Time tracking is required for all hourly employees.
+
+Data Security
+-------------
+Employees must use company-approved VPN when accessing internal systems remotely.
+Personal devices are not permitted to store company data without IT approval.
+All sensitive documents must be encrypted at rest.
+
+Contact
+-------
+HR Helpdesk: hr@acmecorp.example.com
+IT Support: it-support@acmecorp.example.com | 555-123-4567
