@@ -1,7 +1,21 @@
+# LLM & LangChain
 langchain
+langchain-openai
+langchain-postgres
 openai
+
+# API server
+fastapi
+uvicorn[standard]
+
+# Database (pgvector via Railway Postgres)
+psycopg[binary]
+
+# Utilities
+pydantic
+python-dotenv
+
+# Cloud reference examples (optional — not used by the deployed API)
 boto3
 google-cloud-aiplatform
 faiss-cpu
-pydantic
-python-dotenv
