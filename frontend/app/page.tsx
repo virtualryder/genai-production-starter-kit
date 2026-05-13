@@ -7,9 +7,10 @@ import {
   MessageSquare,
   Upload,
   Shield,
-  GitBranch,
+  Bot,
   Layers,
   Database,
+  GitBranch,
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,26 +18,26 @@ import { Badge } from "@/components/ui/badge";
 
 const features = [
   {
+    icon: Bot,
+    title: "LLM Agent Orchestration",
+    description:
+      "GPT-4o-mini with function calling selects the right tool for every query — search, summarize, extract actions, or check compliance.",
+    badge: "Agent",
+    badgeVariant: "default" as const,
+  },
+  {
     icon: Layers,
     title: "RAG Pipeline",
     description:
-      "Semantic retrieval with cross-encoder re-ranking and context compression to maximize answer quality.",
+      "Semantic retrieval with cross-encoder re-ranking and context compression. Every tool call runs the full pipeline.",
     badge: "Core",
     badgeVariant: "retrieval" as const,
-  },
-  {
-    icon: GitBranch,
-    title: "Intent Routing",
-    description:
-      "Agent-based routing directs queries to retrieval, summarization, or action extraction workflows.",
-    badge: "Agent",
-    badgeVariant: "summarization" as const,
   },
   {
     icon: Shield,
     title: "Security Guardrails",
     description:
-      "Prompt injection detection and PII redaction applied automatically on every request.",
+      "Prompt injection detection and PII redaction applied automatically on both input and output.",
     badge: "Security",
     badgeVariant: "action_extraction" as const,
   },
@@ -44,9 +45,9 @@ const features = [
     icon: Database,
     title: "pgvector Store",
     description:
-      "Persistent vector storage via PostgreSQL + pgvector — no additional infrastructure needed.",
+      "Persistent vector storage via PostgreSQL + pgvector — plus AWS Bedrock and GCP Vertex AI reference architectures.",
     badge: "Storage",
-    badgeVariant: "default" as const,
+    badgeVariant: "summarization" as const,
   },
 ];
 
@@ -61,11 +62,19 @@ const steps = [
   },
   {
     step: "02",
-    title: "Ask a question",
-    description: "Query your knowledge base in natural language.",
+    title: "Chat with the agent",
+    description: "Ask any question. The agent picks the right tool and shows its reasoning.",
     href: "/query",
-    cta: "Go to Query",
+    cta: "Open Chat",
     icon: MessageSquare,
+  },
+  {
+    step: "03",
+    title: "Explore agent tools",
+    description: "See all 4 tools, how routing works, and the full request flow.",
+    href: "/agents",
+    cta: "View Agents",
+    icon: Bot,
   },
 ];
 
@@ -91,43 +100,41 @@ export default function DashboardPage() {
         <div className="flex items-center gap-2 mb-3">
           <Badge variant="success">Live</Badge>
           <span className="text-xs text-muted-foreground">
-            API connected · RAG pipeline ready
+            Agent ready · RAG pipeline active · pgvector connected
           </span>
         </div>
         <h1 className="text-2xl font-bold text-foreground tracking-tight">
           GenAI Production Starter Kit
         </h1>
-        <p className="mt-2 text-muted-foreground max-w-xl">
-          A production-ready RAG pipeline with security guardrails, re-ranking,
-          and agent routing — deployed on Railway.
+        <p className="mt-2 text-muted-foreground max-w-2xl leading-relaxed">
+          A production-ready multi-agent RAG system — LLM function calling, semantic retrieval,
+          re-ranking, PII redaction, and security guardrails, all deployed on Railway.
         </p>
         <div className="mt-5 flex items-center gap-3">
           <Button asChild>
             <Link href="/query">
               <MessageSquare className="h-4 w-4" />
-              Start querying
+              Open Chat
             </Link>
           </Button>
           <Button variant="secondary" asChild>
-            <Link href="/ingest">
-              <Upload className="h-4 w-4" />
-              Add documents
+            <Link href="/agents">
+              <Bot className="h-4 w-4" />
+              View Agents
             </Link>
           </Button>
         </div>
       </motion.div>
 
-      {/* Onboarding steps */}
+      {/* Get started */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, delay: 0.08 }}
         className="mb-10"
       >
-        <h2 className="text-sm font-semibold text-foreground mb-4">
-          Get started in two steps
-        </h2>
-        <div className="grid gap-4 sm:grid-cols-2">
+        <h2 className="text-sm font-semibold text-foreground mb-4">Get started</h2>
+        <div className="grid gap-4 sm:grid-cols-3">
           {steps.map((s) => {
             const Icon = s.icon;
             return (

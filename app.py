@@ -1,23 +1,50 @@
 """
 FastAPI application — GenAI Production Starter Kit
 
-Wraps the RAG pipeline, security guardrails, and agent router
-into a deployable REST API backed by PostgreSQL + pgvector.
+Wraps the LLM agent, RAG pipeline, and security guardrails into a
+deployable REST API backed by PostgreSQL + pgvector.
+
+Best-practice additions vs v1:
+  - CORS middleware (configurable via ALLOWED_ORIGINS env var)
+  - Request ID + response-time headers on every response
+  - /metrics endpoint (in-memory counters: queries, intents, ingestions)
+  - Startup env-var validation
+  - Agent-based orchestration replacing keyword intent router
 """
 
 import os
+import time
+import uuid
+from collections import defaultdict
 from contextlib import asynccontextmanager
+from threading import Lock
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request, Response
+from fastapi.middleware.cors import CORSMiddleware
 from langchain_core.documents import Document
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from langchain_postgres import PGVector
 from pydantic import BaseModel
 
-from src.agents.agent_router import classify_intent
-from src.rag.reranker import RetrievedChunk, SimpleCrossEncoderReranker
+from src.agents.llm_agent import RAGAgent
+from src.rag.reranker import SimpleCrossEncoderReranker
 from src.security.input_validation import is_prompt_safe
 from src.security.pii_redaction import redact_pii
+
+
+# ---------------------------------------------------------------------------
+# Startup validation
+# ---------------------------------------------------------------------------
+
+_REQUIRED_ENV_VARS = ["DATABASE_URL", "OPENAI_API_KEY"]
+
+
+def _validate_env() -> None:
+    missing = [v for v in _REQUIRED_ENV_VARS if not os.environ.get(v)]
+    if missing:
+        raise RuntimeError(
+            f"Missing required environment variables: {', '.join(missing)}"
+        )
 
 
 def _pg_connection() -> str:
@@ -29,15 +56,24 @@ def _pg_connection() -> str:
     return url
 
 
+# ---------------------------------------------------------------------------
+# App-level singletons
+# ---------------------------------------------------------------------------
+
 _embeddings: OpenAIEmbeddings | None = None
 _vector_store: PGVector | None = None
-_llm: ChatOpenAI | None = None
+_agent: RAGAgent | None = None
 _reranker = SimpleCrossEncoderReranker()
+
+# Simple in-memory metrics (resets on restart — swap for Prometheus in prod)
+_metrics: dict = defaultdict(int)
+_metrics_lock = Lock()
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    global _embeddings, _vector_store, _llm
+    _validate_env()
+    global _embeddings, _vector_store, _agent
     _embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
     _vector_store = PGVector(
         embeddings=_embeddings,
@@ -45,18 +81,55 @@ async def lifespan(app: FastAPI):
         connection=_pg_connection(),
         use_jsonb=True,
     )
-    _llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+    _agent = RAGAgent(vector_store=_vector_store, reranker=_reranker)
     yield
 
 
-app = FastAPI(title="GenAI RAG API", version="1.0.0", lifespan=lifespan)
+# ---------------------------------------------------------------------------
+# App + middleware
+# ---------------------------------------------------------------------------
+
+app = FastAPI(
+    title="GenAI RAG API",
+    version="2.0.0",
+    description="Production RAG + LLM agent API with security guardrails.",
+    lifespan=lifespan,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=os.environ.get("ALLOWED_ORIGINS", "*").split(","),
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
-# --- Models ---
+@app.middleware("http")
+async def request_id_middleware(request: Request, call_next) -> Response:
+    """Attach X-Request-Id and X-Response-Time-Ms to every response."""
+    request_id = str(uuid.uuid4())
+    start = time.perf_counter()
+    response: Response = await call_next(request)
+    elapsed_ms = round((time.perf_counter() - start) * 1000)
+    response.headers["X-Request-Id"] = request_id
+    response.headers["X-Response-Time-Ms"] = str(elapsed_ms)
+    return response
+
+
+# ---------------------------------------------------------------------------
+# Request / Response models
+# ---------------------------------------------------------------------------
+
+class ToolCallStep(BaseModel):
+    tool: str
+    input: dict
+    output: str
+
 
 class QueryRequest(BaseModel):
     query: str
-    top_k: int = 10
+    top_k: int = 8   # kept for API compatibility; agent uses per-tool defaults
     top_n: int = 3
 
 
@@ -64,6 +137,7 @@ class QueryResponse(BaseModel):
     intent: str
     answer: str
     sources: list[str]
+    trace: list[ToolCallStep] = []
 
 
 class IngestRequest(BaseModel):
@@ -76,58 +150,52 @@ class IngestResponse(BaseModel):
     chars: int
 
 
-# --- Endpoints ---
+# ---------------------------------------------------------------------------
+# Endpoints
+# ---------------------------------------------------------------------------
 
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    return {"status": "ok", "version": app.version}
+
+
+@app.get("/metrics")
+def metrics():
+    """In-memory counters: total queries, intent breakdown, documents ingested."""
+    with _metrics_lock:
+        return dict(_metrics)
 
 
 @app.post("/query", response_model=QueryResponse)
 def query(req: QueryRequest):
+    # --- Security: input validation ---
     if not is_prompt_safe(req.query):
-        raise HTTPException(status_code=400, detail="Query blocked by security filter.")
+        raise HTTPException(
+            status_code=400,
+            detail="Query blocked by security filter.",
+        )
 
     safe_query = redact_pii(req.query)
-    intent = classify_intent(safe_query)
 
-    results = _vector_store.similarity_search_with_score(safe_query, k=req.top_k)
+    with _metrics_lock:
+        _metrics["queries_total"] += 1
 
-    chunks = [
-        RetrievedChunk(
-            chunk_id=str(i),
-            text=doc.page_content,
-            metadata=doc.metadata,
-            retrieval_score=float(score),
-        )
-        for i, (doc, score) in enumerate(results)
-    ]
-    ranked = _reranker.rerank(safe_query, chunks, top_n=req.top_n)
+    # --- Agent orchestration ---
+    result = _agent.run(safe_query)
 
-    if not ranked:
-        return QueryResponse(
-            intent=intent.value,
-            answer="No relevant documents found.",
-            sources=[],
-        )
+    # --- Security: output redaction ---
+    answer = redact_pii(result.answer)
 
-    context = "\n\n".join(c.text for c in ranked)
-    prompt = (
-        "Answer the following question using only the provided context. "
-        "If the context does not contain the answer, say so.\n\n"
-        f"Context:\n{context}\n\n"
-        f"Question: {safe_query}\n\nAnswer:"
-    )
-
-    response = _llm.invoke(prompt)
-    answer = redact_pii(response.content)
+    with _metrics_lock:
+        _metrics[f"intent_{result.intent}"] += 1
 
     return QueryResponse(
-        intent=intent.value,
+        intent=result.intent,
         answer=answer,
-        sources=[
-            c.text[:120] + "..." if len(c.text) > 120 else c.text
-            for c in ranked
+        sources=result.sources,
+        trace=[
+            ToolCallStep(tool=s.tool, input=s.input, output=s.output)
+            for s in result.trace
         ],
     )
 
@@ -136,4 +204,8 @@ def query(req: QueryRequest):
 def ingest(req: IngestRequest):
     doc = Document(page_content=req.text, metadata=req.metadata)
     _vector_store.add_documents([doc])
+
+    with _metrics_lock:
+        _metrics["documents_ingested"] += 1
+
     return IngestResponse(status="ingested", chars=len(req.text))

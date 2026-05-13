@@ -16,6 +16,7 @@ const badgeVariants = cva(
         retrieval: "bg-blue-50 text-blue-700 border border-blue-200",
         summarization: "bg-violet-50 text-violet-700 border border-violet-200",
         action_extraction: "bg-orange-50 text-orange-700 border border-orange-200",
+        compliance: "bg-emerald-50 text-emerald-700 border border-emerald-200",
         unknown: "bg-zinc-100 text-zinc-600 border border-zinc-200",
       },
     },

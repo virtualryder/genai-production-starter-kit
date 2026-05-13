@@ -11,6 +11,7 @@ import {
   Zap,
   X,
   Menu,
+  Bot,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -22,9 +23,14 @@ const navItems = [
     icon: LayoutDashboard,
   },
   {
-    label: "Query",
+    label: "Chat",
     href: "/query",
     icon: MessageSquare,
+  },
+  {
+    label: "Agents",
+    href: "/agents",
+    icon: Bot,
   },
   {
     label: "Ingest",

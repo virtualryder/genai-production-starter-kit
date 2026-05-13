@@ -1,7 +1,14 @@
+export interface ToolStep {
+  tool: string;
+  input: Record<string, unknown>;
+  output: string;
+}
+
 export interface QueryResponse {
   intent: string;
   answer: string;
   sources: string[];
+  trace: ToolStep[];
 }
 
 export interface IngestResponse {
@@ -29,7 +36,7 @@ async function request<T>(path: string, init: RequestInit): Promise<T> {
 
 export function queryRAG(
   query: string,
-  topK = 10,
+  topK = 8,
   topN = 3
 ): Promise<QueryResponse> {
   return request<QueryResponse>("/query", {
@@ -48,6 +55,8 @@ export function ingestDocument(
   });
 }
 
-export function checkHealth(): Promise<{ status: string }> {
-  return request<{ status: string }>("/health", { method: "GET" });
+export function checkHealth(): Promise<{ status: string; version: string }> {
+  return request<{ status: string; version: string }>("/health", {
+    method: "GET",
+  });
 }

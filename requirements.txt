@@ -15,6 +15,11 @@ psycopg[binary]
 pydantic
 python-dotenv
 
+# Testing
+pytest
+pytest-asyncio
+httpx
+
 # Cloud reference examples (optional — not used by the deployed API)
 boto3
 google-cloud-aiplatform
