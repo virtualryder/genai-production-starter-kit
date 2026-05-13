@@ -154,6 +154,16 @@ class IngestResponse(BaseModel):
 # Endpoints
 # ---------------------------------------------------------------------------
 
+@app.get("/")
+def root():
+    return {
+        "name": "GenAI Production Starter Kit",
+        "version": app.version,
+        "docs": "/docs",
+        "health": "/health",
+    }
+
+
 @app.get("/health")
 def health():
     return {"status": "ok", "version": app.version}
