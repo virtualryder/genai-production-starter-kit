@@ -857,6 +857,26 @@ export default function AgentsPage() {
         </div>
       </motion.div>
 
+      {/* Sample data notice */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.05 }}
+        className="mb-6 flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3"
+      >
+        <span className="mt-0.5 text-amber-500 shrink-0">ℹ</span>
+        <div>
+          <p className="text-xs font-semibold text-amber-800">Running on sample data</p>
+          <p className="text-xs text-amber-700 mt-0.5 leading-relaxed">
+            The knowledge base is pre-loaded with fictional ACME Corp documents covering{" "}
+            <strong>remote work policy</strong>, <strong>employee handbook</strong>,{" "}
+            <strong>security &amp; acceptable use policy</strong>, and{" "}
+            <strong>Q2 meeting notes with action items</strong>. Ingest your own documents
+            to replace or extend it.
+          </p>
+        </div>
+      </motion.div>
+
       {/* Live Pipeline Visualizer */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}

@@ -1,0 +1,92 @@
+ACME Corp — Information Security & Acceptable Use Policy (Sample Document)
+Version 3.1 | Effective March 2026
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 1 — PURPOSE AND SCOPE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+This policy governs the use of ACME Corp's information systems, networks, devices, and data.
+It applies to all full-time employees, contractors, and vendors who access ACME systems.
+Violations may result in disciplinary action up to and including termination and legal proceedings.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 2 — DEVICE AND NETWORK SECURITY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+2.1 Approved Devices
+Employees must use ACME-issued devices for all work involving company data or systems.
+Personal devices (BYOD) are not permitted to access internal systems or store company data without prior IT approval and enrollment in the Mobile Device Management (MDM) program.
+
+2.2 VPN Requirement
+All remote access to internal ACME systems must use the company-approved VPN (currently Cloudflare WARP for Teams).
+VPN is mandatory when working from any network outside ACME office premises, including home networks.
+Working from public Wi-Fi (coffee shops, airports, hotels, co-working spaces) requires VPN to be active at all times.
+Splitting VPN tunnels to bypass security controls is prohibited.
+
+2.3 Password and Authentication
+All accounts must use strong passwords: minimum 16 characters, mix of upper, lower, numbers, and symbols.
+Passwords must not be reused across systems or shared with any other person, including managers or IT support.
+Multi-factor authentication (MFA) is mandatory for all ACME systems that support it.
+Password managers are encouraged; ACME provides a company license to 1Password.
+
+2.4 Software and Updates
+Operating system and security patches must be applied within 7 days of release.
+Only IT-approved software may be installed on ACME devices.
+Employees must not disable antivirus, firewall, or endpoint detection software.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 3 — DATA HANDLING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+3.1 Data Classification
+Confidential: Customer data, financial records, source code, employee PII. Requires encryption at rest and in transit. Never share externally without legal approval.
+Internal: Internal communications, project plans, meeting notes. Do not share publicly.
+Public: Marketing materials, published blog posts. No restrictions.
+
+3.2 Storage and Transmission
+Confidential data must be stored in ACME-approved systems (Google Drive, Notion, or approved cloud storage).
+Sending confidential data via personal email or unapproved file-sharing services is prohibited.
+All confidential data transmitted externally must be encrypted.
+
+3.3 Customer Data
+Customer data must only be accessed for legitimate business purposes.
+Customer data must never be used to train third-party AI models without explicit written consent from the customer and legal approval from ACME.
+Any suspected customer data breach must be reported to the security team within 1 hour of discovery.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 4 — ACCEPTABLE USE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+4.1 Permitted Use
+ACME systems and networks are provided for business use. Incidental personal use is acceptable provided it does not violate this policy, consume significant resources, or interfere with work duties.
+
+4.2 Prohibited Activities
+The following are strictly prohibited on ACME systems or networks:
+- Accessing, storing, or distributing illegal content of any kind
+- Attempting to bypass, circumvent, or probe security controls
+- Installing unauthorized software, extensions, or browser plugins
+- Using ACME systems for personal commercial activities or cryptocurrency mining
+- Sharing login credentials or allowing others to use your ACME accounts
+- Accessing colleagues' files, emails, or systems without explicit authorization
+- Using AI tools (ChatGPT, Copilot, etc.) to process confidential or customer data without IT approval
+
+4.3 AI Tool Usage
+Employees may use approved AI productivity tools for drafting, summarizing, and coding assistance.
+Approved tools: GitHub Copilot (engineering), Gemini for Workspace (all employees).
+Unapproved AI tools must not be used to process any confidential, internal, or customer data.
+Submitting customer data, source code, or proprietary business information to unapproved AI services is a serious security violation.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 5 — INCIDENT REPORTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+All suspected security incidents — lost devices, phishing emails, unauthorized access, suspicious software — must be reported immediately to security@acmecorp.example.com or via the #security-incidents Slack channel.
+Do not attempt to investigate or remediate incidents yourself.
+Early reporting is always the right call; there is no penalty for good-faith reporting.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CONTACTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Security team: security@acmecorp.example.com
+IT Support: it-support@acmecorp.example.com
+Slack: #security-incidents, #it-help

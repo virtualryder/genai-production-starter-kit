@@ -1,0 +1,101 @@
+ACME Corp — Employee Handbook (Sample Document)
+Version 4.2 | Effective January 2026
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 1 — EMPLOYMENT POLICIES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1.1 Work Hours
+Standard work week is 40 hours, Monday through Friday.
+Core hours are 10:00 AM to 3:00 PM in the employee's local time zone.
+Flexible start and end times are permitted outside core hours with manager agreement.
+Overtime must be pre-approved in writing by a direct manager.
+
+1.2 Remote Work Policy
+Employees may work remotely up to 3 days per week with prior manager approval.
+All remote work requests must be submitted through the HR portal at least 48 hours in advance.
+Employees working remotely must be available via Slack and email during core hours.
+Remote work from outside the employee's home country requires a separate international remote work request and may have tax and legal implications.
+
+1.3 Time Off and Leave
+Full-time employees receive 20 days of paid time off (PTO) per year, accrued monthly.
+Unused PTO rolls over up to a maximum of 10 days at the end of the calendar year.
+Sick leave is separate from PTO: employees receive 10 sick days per year, non-accruing.
+Parental leave: 16 weeks fully paid for primary caregivers, 6 weeks for secondary caregivers.
+Bereavement leave: 5 days for immediate family, 2 days for extended family.
+All leave requests must be submitted through the HR portal with at least 2 weeks notice where practicable.
+
+1.4 Performance Reviews
+Performance reviews are conducted twice per year: in June and December.
+Employees and managers set OKRs (Objectives and Key Results) at the start of each half.
+Ratings: Exceeds Expectations, Meets Expectations, Needs Improvement.
+Compensation adjustments tied to performance reviews are effective the first of the following month.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 2 — COMPENSATION & BENEFITS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+2.1 Salary and Pay
+Salaries are paid bi-weekly via direct deposit.
+Pay stubs are available in the employee portal.
+Annual cost-of-living increases are reviewed in December and effective January 1.
+
+2.2 Health Benefits
+ACME Corp covers 100% of employee health, dental, and vision premiums.
+Dependents may be added to health plans; ACME covers 60% of dependent premiums.
+Open enrollment runs each November for coverage starting January 1.
+Employees may elect an HSA-compatible high-deductible plan; ACME contributes $750/year to the HSA.
+
+2.3 Retirement
+401(k) plan available to all employees after 60 days of employment.
+ACME matches 100% of contributions up to 4% of base salary.
+Vesting schedule: 25% per year, fully vested after 4 years.
+
+2.4 Learning & Development
+Each employee receives a $2,000 annual learning and development budget.
+Budget resets on January 1 and does not roll over.
+Eligible expenses: conferences, online courses, books, certifications.
+Reimbursement requires manager approval and a receipt; submit via the expense portal within 60 days.
+
+2.5 Equipment and Home Office
+New employees receive a laptop and standard peripherals upon joining.
+A one-time $500 home office stipend is available after 90 days; submit receipts via the expense portal.
+Equipment remains property of ACME Corp and must be returned upon separation.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 3 — CODE OF CONDUCT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+3.1 Professional Behavior
+All employees are expected to treat colleagues, customers, and partners with respect.
+Harassment, discrimination, and retaliation of any kind are grounds for immediate termination.
+Conflicts of interest must be disclosed to HR in writing within 30 days of arising.
+
+3.2 Confidentiality
+Employees must not share proprietary business information, customer data, or unreleased product details outside ACME without explicit written authorization.
+NDAs are in effect for the duration of employment and for 2 years post-separation.
+
+3.3 Social Media
+Employees may discuss their work publicly but must not share confidential information, financial projections, or customer names without consent.
+When posting about ACME, employees should clarify they are sharing personal views, not official company positions.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 4 — SEPARATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+4.1 Voluntary Resignation
+Employees are asked to provide a minimum of 2 weeks written notice.
+Final paycheck, including accrued unused PTO, is issued on the next regular pay date.
+Equipment must be returned within 5 business days of last day.
+
+4.2 Involuntary Termination
+ACME Corp is an at-will employer except where prohibited by law.
+Severance packages, where offered, are detailed in the individual separation agreement.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CONTACTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+HR Helpdesk: hr@acmecorp.example.com
+Benefits questions: benefits@acmecorp.example.com
+IT Support: it-support@acmecorp.example.com
+Legal / Compliance: legal@acmecorp.example.com

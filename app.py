@@ -9,6 +9,7 @@ Best-practice additions vs v1:
   - Request ID + response-time headers on every response
   - /metrics endpoint (in-memory counters: queries, intents, ingestions)
   - Startup env-var validation
+  - Auto-seeding: loads sample documents on first boot if collection is empty
   - Agent-based orchestration replacing keyword intent router
 """
 
@@ -17,6 +18,7 @@ import time
 import uuid
 from collections import defaultdict
 from contextlib import asynccontextmanager
+from pathlib import Path
 from threading import Lock
 
 from fastapi import FastAPI, HTTPException, Request, Response
@@ -57,6 +59,90 @@ def _pg_connection() -> str:
 
 
 # ---------------------------------------------------------------------------
+# Sample data seeding
+# ---------------------------------------------------------------------------
+
+# Metadata for each sample file: (document_type, description)
+_SAMPLE_FILES: list[dict] = [
+    {
+        "path": "sample_data/sample_policy.txt",
+        "source": "sample_policy",
+        "document_type": "policy",
+        "topic": "remote work, data security, work hours",
+        "is_current": True,
+    },
+    {
+        "path": "sample_data/employee_handbook.txt",
+        "source": "employee_handbook",
+        "document_type": "handbook",
+        "topic": "benefits, PTO, compensation, code of conduct, separation",
+        "is_current": True,
+    },
+    {
+        "path": "sample_data/security_policy.txt",
+        "source": "security_policy",
+        "document_type": "policy",
+        "topic": "security, VPN, devices, data handling, acceptable use, AI tools",
+        "is_current": True,
+    },
+    {
+        "path": "sample_data/meeting_notes_q2_planning.txt",
+        "source": "meeting_notes_q2",
+        "document_type": "meeting_notes",
+        "topic": "Q2 planning, action items, GenAI roadmap, hiring, migration",
+        "is_current": True,
+    },
+]
+
+
+def _seed_sample_data(vector_store: PGVector) -> int:
+    """
+    Load sample documents into the vector store.
+
+    Returns the number of documents successfully loaded.
+    Called on startup only when the collection is empty, and also
+    exposed via the POST /seed endpoint for manual re-seeding.
+    """
+    loaded = 0
+    base = Path(__file__).parent
+
+    for meta in _SAMPLE_FILES:
+        file_path = base / meta["path"]
+        if not file_path.exists():
+            print(f"[seed] Skipping missing file: {file_path}")
+            continue
+
+        text = file_path.read_text(encoding="utf-8").strip()
+        if not text:
+            continue
+
+        doc = Document(
+            page_content=text,
+            metadata={
+                "source": meta["source"],
+                "document_type": meta["document_type"],
+                "topic": meta["topic"],
+                "is_current": meta["is_current"],
+                "seeded": True,
+            },
+        )
+        vector_store.add_documents([doc])
+        loaded += 1
+        print(f"[seed] Loaded: {meta['source']}")
+
+    return loaded
+
+
+def _collection_is_empty(vector_store: PGVector) -> bool:
+    """Return True if the vector store has no documents."""
+    try:
+        results = vector_store.similarity_search("test", k=1)
+        return len(results) == 0
+    except Exception:
+        return True
+
+
+# ---------------------------------------------------------------------------
 # App-level singletons
 # ---------------------------------------------------------------------------
 
@@ -74,6 +160,7 @@ _metrics_lock = Lock()
 async def lifespan(app: FastAPI):
     _validate_env()
     global _embeddings, _vector_store, _agent
+
     _embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
     _vector_store = PGVector(
         embeddings=_embeddings,
@@ -82,6 +169,18 @@ async def lifespan(app: FastAPI):
         use_jsonb=True,
     )
     _agent = RAGAgent(vector_store=_vector_store, reranker=_reranker)
+
+    # Auto-seed sample data on first boot
+    if _collection_is_empty(_vector_store):
+        print("[seed] Collection empty — loading sample data…")
+        n = _seed_sample_data(_vector_store)
+        print(f"[seed] Done — {n} document(s) loaded.")
+        with _metrics_lock:
+            _metrics["documents_ingested"] += n
+            _metrics["seeded_on_startup"] = 1
+    else:
+        print("[seed] Collection already has documents — skipping auto-seed.")
+
     yield
 
 
@@ -129,7 +228,7 @@ class ToolCallStep(BaseModel):
 
 class QueryRequest(BaseModel):
     query: str
-    top_k: int = 8   # kept for API compatibility; agent uses per-tool defaults
+    top_k: int = 8
     top_n: int = 3
 
 
@@ -148,6 +247,11 @@ class IngestRequest(BaseModel):
 class IngestResponse(BaseModel):
     status: str
     chars: int
+
+
+class SeedResponse(BaseModel):
+    status: str
+    documents_loaded: int
 
 
 # ---------------------------------------------------------------------------
@@ -178,7 +282,6 @@ def metrics():
 
 @app.post("/query", response_model=QueryResponse)
 def query(req: QueryRequest):
-    # --- Security: input validation ---
     if not is_prompt_safe(req.query):
         raise HTTPException(
             status_code=400,
@@ -190,10 +293,7 @@ def query(req: QueryRequest):
     with _metrics_lock:
         _metrics["queries_total"] += 1
 
-    # --- Agent orchestration ---
     result = _agent.run(safe_query)
-
-    # --- Security: output redaction ---
     answer = redact_pii(result.answer)
 
     with _metrics_lock:
@@ -219,3 +319,17 @@ def ingest(req: IngestRequest):
         _metrics["documents_ingested"] += 1
 
     return IngestResponse(status="ingested", chars=len(req.text))
+
+
+@app.post("/seed", response_model=SeedResponse)
+def seed():
+    """
+    Manually (re-)load all sample documents into the vector store.
+    Useful for resetting demo state without restarting the service.
+    """
+    n = _seed_sample_data(_vector_store)
+
+    with _metrics_lock:
+        _metrics["documents_ingested"] += n
+
+    return SeedResponse(status="seeded", documents_loaded=n)

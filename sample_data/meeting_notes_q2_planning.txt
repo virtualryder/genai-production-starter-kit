@@ -1,0 +1,94 @@
+ACME Corp — Q2 2026 Product & Engineering Planning Meeting (Sample Document)
+Date: April 14, 2026
+Location: Hybrid — Boardroom A + Zoom
+Attendees: Sarah Chen (VP Product), Marcus Webb (Engineering Lead), Priya Patel (Design), Tom Nakamura (DevOps), Lisa Okafor (QA Lead), James Rivera (Data Engineering)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MEETING AGENDA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Q1 retrospective summary
+2. Q2 OKRs alignment
+3. Platform migration status
+4. GenAI feature roadmap
+5. Hiring plan update
+6. Action items and owners
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. Q1 RETROSPECTIVE SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Sarah opened with a summary of Q1 performance:
+- Search feature shipped 2 weeks late due to third-party API instability
+- Mobile DAU up 18% versus Q4, ahead of target
+- Three P1 incidents in Q1, all resolved within SLA
+- Customer satisfaction (CSAT) score improved from 74 to 81
+
+Marcus noted the team velocity was impacted by the unexpected migration of the auth service. This is now complete and should not affect Q2.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. Q2 OKRs
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Objective 1: Ship the GenAI knowledge assistant to beta customers by June 30
+  KR1: 10 beta customers onboarded by May 31
+  KR2: p95 query latency under 3 seconds
+  KR3: CSAT score for GenAI feature above 80
+
+Objective 2: Reduce infrastructure costs by 15%
+  KR1: Complete migration to spot instances for non-critical workloads by May 15
+  KR2: Implement auto-scaling for the ingestion pipeline by April 30
+  KR3: Decommission legacy search cluster by June 15
+
+Objective 3: Improve engineering reliability
+  KR1: Zero P1 incidents in Q2
+  KR2: Automated test coverage above 80% on all new code
+  KR3: Mean time to recovery (MTTR) under 30 minutes
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. PLATFORM MIGRATION STATUS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Tom confirmed the Kubernetes migration is 70% complete. Remaining services: billing, notifications, and the legacy reporting pipeline. Target completion: April 30.
+
+Key risk: the billing service migration has a hard dependency on the new payment provider integration, which is delayed by 1 week on the vendor side. Tom to confirm new timeline by April 18.
+
+Lisa flagged that QA needs 5 business days for regression testing after each service migration. All migration tickets must be flagged in Jira with the "needs-QA-sign-off" label before they can be marked complete.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4. GENAI FEATURE ROADMAP
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Priya presented three UX concepts for the GenAI assistant interface. The team agreed on Concept B (inline chat with source citations visible). Priya to produce high-fidelity mockups by April 21.
+
+James confirmed the RAG pipeline is tested and performs within latency targets on documents up to 50,000 tokens. Larger documents require chunking — James to implement auto-chunking by April 25.
+
+Marcus raised a concern about prompt injection security. Agreed to bring in an external security review before the beta launch. Sarah to contact the vendor and get a quote by April 22.
+
+Sarah shared that 3 design partners have already agreed to participate in beta. Marcus to set up dedicated beta environments by April 28.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5. HIRING PLAN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Two open roles approved for Q2: a senior backend engineer (ML infrastructure focus) and a product data analyst.
+Marcus to finalize job descriptions and post to Greenhouse by April 18.
+Sarah to schedule kick-off with the recruiting team by April 17.
+Target: both roles filled by June 30.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ACTION ITEMS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Tom Nakamura — Confirm updated billing service migration timeline with payment vendor. Due: April 18.
+2. Marcus Webb — Post senior backend engineer and product data analyst job descriptions to Greenhouse. Due: April 18.
+3. Sarah Chen — Schedule kick-off with recruiting team for Q2 hires. Due: April 17.
+4. Priya Patel — Deliver high-fidelity mockups for GenAI assistant (Concept B). Due: April 21.
+5. Sarah Chen — Contact security vendor for external prompt injection review quote. Due: April 22.
+6. James Rivera — Implement auto-chunking for documents over 50,000 tokens in the RAG pipeline. Due: April 25.
+7. Marcus Webb — Set up dedicated beta environments for GenAI feature design partners. Due: April 28.
+8. Tom Nakamura — Complete migration of billing, notifications, and reporting pipeline to Kubernetes. Due: April 30.
+9. Tom Nakamura — Implement auto-scaling for the ingestion pipeline. Due: April 30.
+10. Lisa Okafor — Update QA process documentation to include migration regression sign-off requirements. Due: April 21.
+11. All engineers — Ensure all new code submitted in Q2 includes unit tests to maintain 80%+ coverage target.
+12. Marcus Webb — Schedule team retrospective for end of April to review migration progress and GenAI beta readiness.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+NEXT MEETING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Weekly product sync: every Tuesday 10:00 AM PT
+Next planning check-in: May 12, 2026
