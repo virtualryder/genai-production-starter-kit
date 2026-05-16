@@ -13,8 +13,9 @@ import {
   GitBranch,
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 const features = [
   {
@@ -111,18 +112,14 @@ export default function DashboardPage() {
           re-ranking, PII redaction, and security guardrails, all deployed on Railway.
         </p>
         <div className="mt-5 flex items-center gap-3">
-          <Button asChild>
-            <Link href="/query">
-              <MessageSquare className="h-4 w-4" />
-              Open Chat
-            </Link>
-          </Button>
-          <Button variant="secondary" asChild>
-            <Link href="/agents">
-              <Bot className="h-4 w-4" />
-              View Agents
-            </Link>
-          </Button>
+          <Link href="/query" className={cn(buttonVariants())}>
+            <MessageSquare className="h-4 w-4" />
+            Open Chat
+          </Link>
+          <Link href="/agents" className={cn(buttonVariants({ variant: "secondary" }))}>
+            <Bot className="h-4 w-4" />
+            View Agents
+          </Link>
         </div>
       </motion.div>
 
@@ -155,12 +152,10 @@ export default function DashboardPage() {
                   <CardDescription>{s.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button variant="secondary" size="sm" asChild>
-                    <Link href={s.href}>
-                      {s.cta}
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </Link>
-                  </Button>
+                  <Link href={s.href} className={cn(buttonVariants({ variant: "secondary", size: "sm" }))}>
+                    {s.cta}
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
                 </CardContent>
               </Card>
             );
